@@ -15,7 +15,7 @@ export async function signToken(user: User) {
 }
 
 
-export async function verifyToken(token: string) {
+export  function verifyToken(token: string): any {
     if (JWT_SECRET) {
         return jwt.verify(token, JWT_SECRET)
     }

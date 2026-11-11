@@ -34,7 +34,7 @@ userRouter.put("/:id", async (req: Request, res: Response) => {
     const { name, email } = req.body;
     const user = UserModel.findByIdAndUpdate({ _id: id }, { name, email });
     return res.status(200).json({ "msg": "user is updated !", user })
-})
+});
 
 
 userRouter.delete("/:id", async (req, res) => {
@@ -42,7 +42,7 @@ userRouter.delete("/:id", async (req, res) => {
     const user = await UserModel.findByIdAndDelete({ _id: id });
     return res.status(200).json({ "msg": "user deleted !", user })
 
-})
+});
 
 
 

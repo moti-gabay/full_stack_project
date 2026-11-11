@@ -3,21 +3,25 @@ import type { User } from "../types/types.ts";
 import { UserModel } from "../model/user.ts";
 import { signToken, verifyToken } from "../utils/utils.ts";
 import { hash, compare } from "bcrypt"
+import { validet } from "../middlewere/validetion.ts";
+import { requireAuth } from "../middlewere/requireAuth.ts";
 
 
 export const authRouter = Router();
 
+export const COOKIE_NAME = 'token'
 
 authRouter.post("/register", async (req: Request, res: Response) => {
     try {
-        
+
         const { name, email, password } = req.body;
-        if (!name || !email) {
-            return res.send("name and email is required")
+        if (!name || !email || !password) {
+            return res.send("name and email and password is required");
         }
         const hashPassword = await hash(password, 10);
-        const user = await UserModel.create({ name, email,password:hashPassword, role: "user" });
-        return res.status(201).json({ id: user._id, email: user.email })
+        const user = await UserModel.create({ name, email, password: hashPassword, role: "user" });
+        return res.status(201).json({ id: user._id, email: user.email });
+
     } catch (err: any) {
         if (err.code === 11000) {
             return res.status(409).json({ "msg": "email already exists" })
@@ -29,7 +33,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
 
 authRouter.post("/login", async (req: Request, res: Response) => {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
         return res.status(400).json({ "msg": "email and password is required" })
     }
@@ -39,7 +43,8 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     }
 
     const token = await signToken(user as unknown as User);
-    res.cookie('token', token, {
+
+    res.cookie(COOKIE_NAME, token, {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
@@ -49,7 +54,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 
 });
 
-authRouter.get("/me", async (req: Request, res: Response) => {
+authRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
     const token = req.cookies.token;
     if (!token) {
         return res.sendStatus(401)
@@ -64,7 +69,7 @@ authRouter.get("/me", async (req: Request, res: Response) => {
 
 })
 
-authRouter.post("/logout", (req, res) => {
+authRouter.post("/logout",requireAuth, (req, res) => {
     res.clearCookie('token');
     return res.sendStatus(204);
 });
