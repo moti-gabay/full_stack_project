@@ -15,7 +15,7 @@ export async function signToken(user: User) {
 }
 
 
-export  function verifyToken(token: string): any {
+export function verifyToken(token: string): any {
     if (JWT_SECRET) {
         return jwt.verify(token, JWT_SECRET)
     }
@@ -40,4 +40,17 @@ export  function verifyToken(token: string): any {
 //         throw new Error(err)
 //     }
 
-// }
+// }\
+
+
+
+export class HttpError extends Error {
+    status: number;
+
+    constructor(status: number, message: string) {
+        super(message);
+        this.name = "HttpError";
+        this.status = status;
+    }
+
+}

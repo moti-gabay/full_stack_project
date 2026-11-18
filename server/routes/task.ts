@@ -1,6 +1,9 @@
 import { Router, type Request, type Response } from "express";
 import { TaskModel } from "../model/task.ts";
 import { requireAuth } from "../middlewere/requireAuth.ts";
+import { idParams } from "../schema/commn.ts";
+import { currntUser } from "../middlewere/requireAuth.ts";
+import { HttpError } from "../utils/utils.ts";
 
 export const taskRouter = Router();
 
@@ -31,21 +34,18 @@ taskRouter.post("/", async (req: Request, res: Response) => {
 });
 
 taskRouter.put("/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { user } = req;
+    const { id } = idParams.parse(req.params);
     const { title, done } = req.body;
-    const task = await TaskModel.findById({ _id: id });
-    if (!task) {
-        return res.status(404).json({ error: "task not found" })
+
+    const updateTask = await TaskModel.findOneAndUpdate(
+        { _id: id, userId: currntUser(req) },
+        { title, done },
+        { returnDocument: "after", runValidators: true }
+    )
+    if (!updateTask) {
+        throw new HttpError(404, "Task is not found")
     }
-    if (!user) {
-        return res.json({ error: "user not found" })
-    }
-    if (!task.userId.equals(user._id)) {
-        return res.json({ error: "not your task" })
-    }
-    const updateTask = await TaskModel.updateOne({ _id: id }, { title, done })
-    return res.status(200).json({ "msg": "task is updated !", updateTask })
+    return res.status(200).json({ "msg": "task is updated !", updateTask });
 })
 
 taskRouter.delete("/:id", async (req, res) => {

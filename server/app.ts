@@ -8,6 +8,8 @@ import "./db/db.ts";
 import { logger } from "./middlewere/logger.ts";
 import { requestID } from "./middlewere/requst-id.ts";
 import { taskRouter } from "./routes/task.ts";
+import { adminRouter } from "./routes/admin.ts";
+import { requireAuth, requireRole } from "./middlewere/requireAuth.ts";
 
 process.loadEnvFile();
 
@@ -26,8 +28,9 @@ app.use(cors({
 }))
 
 app.use("/api/auth", authRouter);
-app.use("/api/users", userRouter);
+// app.use("/api/users", userRouter);
 app.use("/api/tasks", taskRouter);
+app.use("/api/admin", requireAuth , requireRole("admin") ,adminRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.json({ "msg": "holleo from ts server" })
