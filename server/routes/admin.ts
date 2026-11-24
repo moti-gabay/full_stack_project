@@ -11,12 +11,8 @@ import { hash, compare } from "bcrypt"
 export const adminRouter = Router();
 
 adminRouter.get("/users", async (req: Request, res: Response) => {
-    try {
-        const users = await UserModel.find({});
-        res.json(users)
-    } catch (err: any) {
-        throw new Error(err)
-    }
+    const users = await UserModel.find({});
+    res.json(users);
 });
 
 adminRouter.post("/users", async (req: Request, res: Response) => {

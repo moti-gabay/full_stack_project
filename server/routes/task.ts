@@ -17,6 +17,15 @@ taskRouter.get("/", async (req: Request, res: Response) => {
         throw new Error(err)
     }
 });
+taskRouter.get("/:id", async (req: Request, res: Response) => {
+    const { id } = idParams.parse(req.params);
+    try {
+        const tasks = await TaskModel.find({ userId: req.user.id, _id: id });
+        res.json(tasks);
+    } catch (err: any) {
+        throw new Error(err)
+    }
+});
 
 taskRouter.post("/", async (req: Request, res: Response) => {
     const { title } = req.body;

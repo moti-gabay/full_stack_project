@@ -3,7 +3,6 @@ import type { User } from "../types/types.ts";
 import { UserModel } from "../model/user.ts";
 import { signToken, verifyToken } from "../utils/utils.ts";
 import { hash, compare } from "bcrypt"
-import { validet } from "../middlewere/validetion.ts";
 import { requireAuth } from "../middlewere/requireAuth.ts";
 import { loginSchema, registerSchema } from "../schema/user.ts";
 
@@ -39,8 +38,8 @@ authRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
         return res.sendStatus(401)
     }
     try {
-        const jwtPayload = await verifyToken(token)
-        return res.json({ userId: jwtPayload });
+        const {_id,name,email,role} = req.user!
+        return res.json({ user: {id:_id.toString(),name,email,role} });
     } catch {
         return res.sendStatus(401)
     }

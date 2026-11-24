@@ -26,9 +26,9 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     try {
         paylod = verifyToken(token);
     } catch (error) {
-        if (error.name) {
-            const code = error.name === "TokenExpiredError" ? "TOKEN_EXPIRED" : "INVALID_TOKEN";
-        }
+
+        const code = error.name === "TokenExpiredError" ? "TOKEN_EXPIRED" : "INVALID_TOKEN";
+
         return res.status(401).json({ error: "invalide or expierd token", code })
     }
     const { userId } = paylod;
@@ -51,7 +51,7 @@ export function requireRole(...allowed: Role[]): RequestHandler {
             return;
         }
         if (!allowed.includes(user.role)) {
-            req.status(403).json({ error: "Forbidden" })
+            res.status(403).json({ error: "Forbidden" })
             return;
         }
         next();

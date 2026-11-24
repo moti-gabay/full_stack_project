@@ -8,12 +8,11 @@ const JWT_SECRET = config.jwt_secret;
 
 export async function signToken(user: User) {
     if (JWT_SECRET) {
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { "expiresIn": "1d" })
+        const token = jwt.sign({ userId: user._id.toString() }, JWT_SECRET, { "expiresIn": "1d" })
         return token;
     }
     return -1
 }
-
 
 export function verifyToken(token: string): any {
     if (JWT_SECRET) {
@@ -40,17 +39,13 @@ export function verifyToken(token: string): any {
 //         throw new Error(err)
 //     }
 
-// }\
-
-
+// }
 
 export class HttpError extends Error {
     status: number;
-
     constructor(status: number, message: string) {
         super(message);
         this.name = "HttpError";
         this.status = status;
     }
-
 }
