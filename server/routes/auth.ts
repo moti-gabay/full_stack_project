@@ -37,12 +37,8 @@ authRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
     if (!token) {
         return res.sendStatus(401)
     }
-    try {
         const {_id,name,email,role} = req.user!
-        return res.json({ user: {id:_id.toString(),name,email,role} });
-    } catch {
-        return res.sendStatus(401)
-    }
+        return res.status(200).json({ user: {id:_id.toString(),name,email,role} });
 })
 
 authRouter.post("/logout", requireAuth, (req, res) => {

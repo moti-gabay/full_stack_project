@@ -10,6 +10,7 @@ function getToken(req: Request) {
     if (fromCookie) {
         return fromCookie;
     }
+   
     const header = req.get('authorzation');
     if (header?.startsWith("Bearer ")) {
         return header.slice(7);
