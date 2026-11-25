@@ -3,8 +3,6 @@ import { userRouter } from "./routes/users.ts";
 import { authRouter } from "./routes/auth.ts";
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { config } from "./config.ts";
-import "./db/db.ts";
 import { logger } from "./middlewere/logger.ts";
 import { requestID } from "./middlewere/requst-id.ts";
 import { taskRouter } from "./routes/task.ts";
@@ -14,7 +12,6 @@ import { errorHandler, notFound } from "./middlewere/errorHadler.ts";
 
 export const app = express();
 
-const PORT = config.port || 3001;
 
 app.use(express.json());
 // app.use(logger);
@@ -40,6 +37,3 @@ app.get('/', (req: Request, res: Response) => {
     res.json({ "msg": "holleo from ts server" })
 });
 
-app.listen(PORT, () => {
-    console.log("setver is running on port", PORT);
-})

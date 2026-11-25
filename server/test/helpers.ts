@@ -2,8 +2,6 @@ import request from "supertest";
 import { app } from "../app.ts";
 import { UserModel } from "../model/user.ts";
 
-
-
 export async function signUp(name: string) {
     const agent = request.agent(app);
     const email = `${name}@gmail.com`;
@@ -23,9 +21,8 @@ export async function signUp(name: string) {
 
 }
 
-
 export async function makeAdmin(email: string) {
     await UserModel.updateOne({ email }, { role: "admin" })
 }
 
-
+export type Person = Awaited<ReturnType<typeof signUp>>
